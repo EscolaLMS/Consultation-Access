@@ -10,7 +10,10 @@ class CreateConsultationAccessEnquiryProposedTermsTable extends Migration
     {
         Schema::create('consultation_access_enquiry_proposed_terms', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('consultation_access_enquiry_id')->constrained('consultation_access_enquiries')->cascadeOnDelete();
+            $table->foreign('consultation_access_enquiry_id', 'cons_acc_enq_prop_terms_cons_acc_enq_id_foreign')
+                ->references('id')
+                ->on('consultation_access_enquiries')
+                ->onDelete('cascade');
             $table->dateTime('proposed_at');
             $table->timestamps();
         });
