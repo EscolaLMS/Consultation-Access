@@ -1,0 +1,47 @@
+{
+  "name": "escolalms/consultation-access",
+  "description": "Escola Headles LMS Consultation Access",
+  "type": "package",
+  "require": {
+    "php": "^7.4|^8.0|^8.1",
+    "escolalms/auth": "^0",
+    "escolalms/core": "^1",
+    "escolalms/settings": "^0",
+    "escolalms/consultations": "^0",
+    "laravel/framework": "^8|^9"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "orchestra/testbench": ">=5.0",
+    "darkaonline/l5-swagger": "8.1.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Maciej Rymarz",
+      "email": "maciej.rymarz@escolasoft.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "EscolaLms\\ConsultationAccess\\": "src",
+      "EscolaLms\\ConsultationAccess\\Tests\\": "tests",
+      "EscolaLms\\ConsultationAccess\\Database\\Factories\\": "database/factories",
+      "EscolaLms\\ConsultationAccess\\Database\\Seeders\\": "database/seeders"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "EscolaLms\\ConsultationAccess\\EscolaLmsConsultationAccessServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "optimize-autoloader": false,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
