@@ -39,7 +39,7 @@ class CreateConsultationAccessEnquiryRequest extends FormRequest
         return [
             'consultation_id' => ['required', 'integer', 'exists:consultations,id'],
             'proposed_terms' => ['required', 'array', 'min:1'],
-            'proposed_terms.*' => ['required', 'date', 'after_or_equal:now']
+            'proposed_terms.*' => ['required', 'date', 'after_or_equal:now'],
         ];
     }
 
