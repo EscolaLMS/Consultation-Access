@@ -27,7 +27,7 @@ interface ConsultationAccessEnquiryApiSwagger
      *          ),
      *      ),
      *     @OA\Parameter(
-     *          name="limit",
+     *          name="per_page",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
@@ -49,6 +49,26 @@ interface ConsultationAccessEnquiryApiSwagger
      *          @OA\Schema(
      *              type="string",
      *              enum={"pending", "approved"}
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="proposed_at_from",
+     *          description="Proposed at from",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              format="date-time",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="proposed_at_to",
+     *          description="Proposed at to",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              format="date-time",
      *          ),
      *      ),
      *      @OA\Response(

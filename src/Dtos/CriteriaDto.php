@@ -7,7 +7,10 @@ use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use EscolaLms\Core\Dtos\CriteriaDto as BaseCriteriaDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
+use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFromRequest
@@ -24,6 +27,16 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
         }
         if ($request->get('status')) {
             $criteria->push(new EqualCriterion('status', $request->get('status')));
+        }
+        if ($request->get('proposed_at_from')) {
+            $criteria->push(new HasCriterion('consultationAccessEnquiryProposedTerms', function (Builder $query) use ($request) {
+                $query->whereDate('proposed_at', '>=', Carbon::make($request->get('proposed_at_from')));
+            }));
+        }
+        if ($request->get('proposed_at_to')) {
+            $criteria->push(new HasCriterion('consultationAccessEnquiryProposedTerms', function (Builder $query) use ($request) {
+                $query->whereDate('proposed_at', '<=', Carbon::make($request->get('proposed_at_to')));
+            }));
         }
 
         $criteria->push(new OrderCriterion($request->get('order_by') ?? 'id', $request->get('order') ?? 'desc'));
