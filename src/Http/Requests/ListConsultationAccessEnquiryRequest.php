@@ -3,6 +3,7 @@
 namespace EscolaLms\ConsultationAccess\Http\Requests;
 
 use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
+use EscolaLms\ConsultationAccess\Dtos\PageDto;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,8 +26,8 @@ class ListConsultationAccessEnquiryRequest extends FormRequest
         return CriteriaDto::instantiateFromRequest($this);
     }
 
-    public function getPaginationDto(): PaginationDto
+    public function getPaginationDto(): PageDto
     {
-        return PaginationDto::instantiateFromRequest($this);
+        return PageDto::instantiateFromRequest($this);
     }
 }

@@ -4,8 +4,8 @@ namespace EscolaLms\ConsultationAccess\Services;
 
 use EscolaLms\ConsultationAccess\Dtos\ConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
+use EscolaLms\ConsultationAccess\Dtos\PageDto;
 use EscolaLms\ConsultationAccess\Dtos\UpdateConsultationAccessEnquiryDto;
-use EscolaLms\ConsultationAccess\Enum\ConsultationAccessPermissionEnum;
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminCreatedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminUpdatedEvent;
@@ -22,9 +22,7 @@ use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserRepositoryContract;
 use EscolaLms\Consultations\Services\Contracts\ConsultationServiceContract;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
-use EscolaLms\Notifications\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Support\Facades\DB;
 
 class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServiceContract
@@ -46,17 +44,17 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         $this->consultationService = $consultationService;
     }
 
-    public function findByUser(CriteriaDto $criteriaDto, PaginationDto $paginationDto, int $userId): LengthAwarePaginator
+    public function findByUser(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
     {
         $criteria = $criteriaDto->toArray();
         $criteria[] = new EqualCriterion('user_id', $userId);
 
-        return $this->accessEnquiryRepository->findByCriteria($criteria, $paginationDto->getLimit());
+        return $this->accessEnquiryRepository->findByCriteria($criteria, $paginationDto->getPerPage());
     }
 
-    public function findAll(CriteriaDto $criteriaDto, PaginationDto $paginationDto, int $userId): LengthAwarePaginator
+    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
     {
-        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getLimit());
+        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getPerPage());
     }
 
     public function create(ConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
