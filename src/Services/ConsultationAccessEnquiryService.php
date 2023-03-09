@@ -2,12 +2,13 @@
 
 namespace EscolaLms\ConsultationAccess\Services;
 
-use EscolaLms\Auth\Models\User;
 use EscolaLms\ConsultationAccess\Dtos\ConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
-use EscolaLms\ConsultationAccess\Enum\ConsultationAccessPermissionEnum;
+use EscolaLms\ConsultationAccess\Dtos\PageDto;
+use EscolaLms\ConsultationAccess\Dtos\UpdateConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminCreatedEvent;
+use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminUpdatedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryDisapprovedEvent;
 use EscolaLms\ConsultationAccess\Exceptions\ConsultationAccessException;
 use EscolaLms\ConsultationAccess\Exceptions\EnquiryAlreadyApprovedException;
@@ -22,7 +23,6 @@ use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserRepositoryCon
 use EscolaLms\Consultations\Services\Contracts\ConsultationServiceContract;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Support\Facades\DB;
 
 class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServiceContract
@@ -44,17 +44,17 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         $this->consultationService = $consultationService;
     }
 
-    public function findByUser(CriteriaDto $criteriaDto, PaginationDto $paginationDto, int $userId): LengthAwarePaginator
+    public function findByUser(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
     {
         $criteria = $criteriaDto->toArray();
         $criteria[] = new EqualCriterion('user_id', $userId);
 
-        return $this->accessEnquiryRepository->findByCriteria($criteria, $paginationDto->getLimit());
+        return $this->accessEnquiryRepository->findByCriteria($criteria, $paginationDto->getPerPage());
     }
 
-    public function findAll(CriteriaDto $criteriaDto, PaginationDto $paginationDto, int $userId): LengthAwarePaginator
+    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
     {
-        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getLimit());
+        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getPerPage());
     }
 
     public function create(ConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
@@ -70,7 +70,7 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
                 ]);
             }
 
-            $this->dispatchEventToAdminsAfterCreateEnquiry($enquiry);
+            event(new ConsultationAccessEnquiryAdminCreatedEvent($enquiry->consultation->author, $enquiry));
 
             return $enquiry;
         });
@@ -108,11 +108,26 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         event(new ConsultationAccessEnquiryDisapprovedEvent($enquiry->user, $enquiry->consultation->name, $message));
     }
 
-    private function dispatchEventToAdminsAfterCreateEnquiry(ConsultationAccessEnquiry $enquiry): void
+    public function delete(int $id): void
     {
-        User::permission(ConsultationAccessPermissionEnum::APPROVE_CONSULTATION_ACCESS_ENQUIRY)
-            ->get()
-            ->each(fn (User $admin) => event(new ConsultationAccessEnquiryAdminCreatedEvent($admin, $enquiry)));
+        $this->accessEnquiryRepository->delete($id);
+    }
+
+    public function update(int $id, UpdateConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
+    {
+        $enquiry = $this->accessEnquiryRepository->findById($id);
+        $enquiry->consultationAccessEnquiryProposedTerms()->delete();
+
+        foreach ($dto->getProposedTerms() as $term) {
+            $this->proposedTermRepository->create([
+                'consultation_access_enquiry_id' => $enquiry->getKey(),
+                'proposed_at' => $term,
+            ]);
+        }
+
+        event(new ConsultationAccessEnquiryAdminUpdatedEvent($enquiry->consultation->author, $enquiry));
+
+        return $enquiry;
     }
 
     private function createConsultationUser(ConsultationAccessEnquiryProposedTerm $proposedTerm): void

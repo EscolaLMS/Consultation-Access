@@ -16,5 +16,7 @@ Route::prefix('api')->middleware(['auth:api'])->group(function () {
     Route::prefix('consultation-access-enquiries')->group(function () {
         Route::get(null, [ConsultationAccessEnquiryApiController::class, 'index']);
         Route::post(null, [ConsultationAccessEnquiryApiController::class, 'create']);
+        Route::patch('{id}', [ConsultationAccessEnquiryApiController::class, 'update'])->whereNumber('id');
+        Route::delete('{id}', [ConsultationAccessEnquiryApiController::class, 'delete'])->whereNumber('id');
     });
 });

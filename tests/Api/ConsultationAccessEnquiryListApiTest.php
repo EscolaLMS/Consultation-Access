@@ -7,6 +7,7 @@ use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
 use EscolaLms\Core\Tests\CreatesUsers;
+use Illuminate\Support\Carbon;
 
 class ConsultationAccessEnquiryListApiTest extends TestCase
 {
@@ -60,6 +61,60 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
                         ],
                     ],
                 ]],
+            ]);
+    }
+
+    public function testConsultationAccessEnquiryListFiltering(): void
+    {
+        $student = $this->makeStudent();
+
+        ConsultationAccessEnquiry::factory()
+            ->state(['user_id' => $student->getKey()])
+            ->count(4)
+            ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::now()]))
+            ->create();
+
+        ConsultationAccessEnquiry::factory()
+            ->state(['user_id' => $student->getKey()])
+            ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::now()->addDays(3)]))
+            ->create();
+
+        $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?proposed_at_from=' . Carbon::now()->addDays(2))
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
+
+        $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?proposed_at_to=' . Carbon::now()->addDay())
+            ->assertOk()
+            ->assertJsonCount(4, 'data');
+    }
+
+    public function testConsultationAccessEnquiryListPagination(): void
+    {
+        $student = $this->makeStudent();
+
+        ConsultationAccessEnquiry::factory()
+            ->state(['user_id' => $student->getKey()])
+            ->count(25)
+            ->create();
+
+        $this->actingAs($student, 'api')
+            ->getJson('api/consultation-access-enquiries?per_page=10')
+            ->assertOk()
+            ->assertJsonCount(10, 'data')
+            ->assertJson([
+                'meta' => [
+                    'total' => 25
+                ]
+            ]);
+
+        $this->actingAs($student, 'api')
+            ->getJson('api/consultation-access-enquiries?per_page=10&page=3')
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJson([
+                'meta' => [
+                    'total' => 25
+                ]
             ]);
     }
 }

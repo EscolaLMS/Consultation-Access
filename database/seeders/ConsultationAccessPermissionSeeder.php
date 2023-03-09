@@ -23,6 +23,8 @@ class ConsultationAccessPermissionSeeder extends Seeder
         $student->givePermissionTo([
             ConsultationAccessPermissionEnum::LIST_OWN_CONSULTATION_ACCESS_ENQUIRY,
             ConsultationAccessPermissionEnum::CREATE_OWN_CONSULTATION_ACCESS_ENQUIRY,
+            ConsultationAccessPermissionEnum::DELETE_OWN_CONSULTATION_ACCESS_ENQUIRY,
+            ConsultationAccessPermissionEnum::UPDATE_OWN_CONSULTATION_ACCESS_ENQUIRY,
         ]);
     }
 }

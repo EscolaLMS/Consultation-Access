@@ -3,7 +3,9 @@
 namespace EscolaLms\ConsultationAccess\Http\Controllers;
 
 use EscolaLms\ConsultationAccess\Http\Controllers\Swagger\ConsultationAccessEnquiryApiSwagger;
+use EscolaLms\ConsultationAccess\Http\Requests\DeleteConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Requests\ListConsultationAccessEnquiryRequest;
+use EscolaLms\ConsultationAccess\Http\Requests\UpdateConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Resources\ConsultationAccessEnquiryResource;
 use EscolaLms\ConsultationAccess\Http\Requests\CreateConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Services\Contracts\ConsultationAccessEnquiryServiceContract;
@@ -31,5 +33,19 @@ class ConsultationAccessEnquiryApiController extends EscolaLmsBaseController imp
         $result = $this->service->create($request->toDto());
 
         return $this->sendResponseForResource(ConsultationAccessEnquiryResource::make($result), __('Created successfully'));
+    }
+
+    public function delete(DeleteConsultationAccessEnquiryRequest $request): JsonResponse
+    {
+        $this->service->delete($request->getId());
+
+        return $this->sendSuccess(__('Consultation access enquiry deleted successfully.'));
+    }
+
+    public function update(UpdateConsultationAccessEnquiryRequest $request): JsonResponse
+    {
+        $result = $this->service->update($request->getId(), $request->toDto());
+
+        return $this->sendResponseForResource(ConsultationAccessEnquiryResource::make($result), __('Updated successfully'));
     }
 }
