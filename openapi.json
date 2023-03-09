@@ -22,7 +22,7 @@
                         }
                     },
                     {
-                        "name": "limit",
+                        "name": "per_page",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -55,6 +55,26 @@
                                 "pending",
                                 "approved"
                             ]
+                        }
+                    },
+                    {
+                        "name": "proposed_at_from",
+                        "in": "query",
+                        "description": "Proposed at from",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "proposed_at_to",
+                        "in": "query",
+                        "description": "Proposed at to",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     }
                 ],
@@ -184,7 +204,7 @@
                         }
                     },
                     {
-                        "name": "limit",
+                        "name": "per_page",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -209,6 +229,26 @@
                                 "pending",
                                 "approved"
                             ]
+                        }
+                    },
+                    {
+                        "name": "proposed_at_from",
+                        "in": "query",
+                        "description": "Proposed at from",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "proposed_at_to",
+                        "in": "query",
+                        "description": "Proposed at to",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     }
                 ],
@@ -290,6 +330,97 @@
                     }
                 ]
             }
+        },
+        "/api/consultation-access-enquiries/{id}": {
+            "delete": {
+                "tags": [
+                    "Consultation Access"
+                ],
+                "summary": "Remove the specified Consultation Access Enquiry",
+                "description": "Delete Consultation Access Enquiry",
+                "operationId": "e1b002830434318b66c232ef61d3dbad",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Consultation Access"
+                ],
+                "summary": "Update Consultation Access Enqiury",
+                "description": "Update Consultation Access Enqiury",
+                "operationId": "e3ac21faaeaa9311e36e742cc7524840",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateConsultationAccessEnquiryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfull operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ConsultationAccessEnquiryResource"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -312,6 +443,21 @@
                         "description": "consultation_id",
                         "type": "number"
                     },
+                    "proposed_terms": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateConsultationAccessEnquiryRequest": {
+                "required": [
+                    "proposed_terms"
+                ],
+                "properties": {
                     "proposed_terms": {
                         "type": "array",
                         "items": {
