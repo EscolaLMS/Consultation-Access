@@ -443,6 +443,10 @@
                         "description": "consultation_id",
                         "type": "number"
                     },
+                    "description": {
+                        "description": "description",
+                        "type": "string"
+                    },
                     "proposed_terms": {
                         "type": "array",
                         "items": {
@@ -458,6 +462,10 @@
                     "proposed_terms"
                 ],
                 "properties": {
+                    "description": {
+                        "description": "description",
+                        "type": "string"
+                    },
                     "proposed_terms": {
                         "type": "array",
                         "items": {
@@ -501,6 +509,10 @@
                     },
                     "status": {
                         "description": "status",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "description",
                         "type": "string"
                     },
                     "proposed_terms": {
