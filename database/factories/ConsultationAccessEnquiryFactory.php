@@ -18,6 +18,7 @@ class ConsultationAccessEnquiryFactory extends Factory
             'consultation_id' => Consultation::factory(),
             'user_id' => User::factory(),
             'status' => EnquiryStatusEnum::PENDING,
+            'description' => $this->faker->text(),
         ];
     }
 }

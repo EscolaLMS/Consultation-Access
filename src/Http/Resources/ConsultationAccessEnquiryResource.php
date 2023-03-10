@@ -33,6 +33,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *          type="string"
  *      ),
  *      @OA\Property(
+ *          property="description",
+ *          description="description",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
  *          property="proposed_terms",
  *          ref="#/components/schemas/ConsultationAccessEnquiryProposedTermsResource"
  *      ),
@@ -54,6 +59,7 @@ class ConsultationAccessEnquiryResource extends JsonResource
             'consultation' => ConsultationShortResource::make($this->consultation),
             'user' => UserShortResource::make($this->user),
             'proposed_terms' => ConsultationAccessEnquiryProposedTermsResource::collection($this->consultationAccessEnquiryProposedTerms),
+            'description' => $this->description,
         ];
     }
 }

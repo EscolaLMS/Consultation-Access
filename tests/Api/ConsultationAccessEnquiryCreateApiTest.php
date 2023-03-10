@@ -38,10 +38,12 @@ class ConsultationAccessEnquiryCreateApiTest extends TestCase
     {
         Event::fake([ConsultationAccessEnquiryAdminCreatedEvent::class]);
         $proposedTerm = Carbon::now()->addDays();
+        $description = $this->faker->text();
 
         $this->actingAs($this->student, 'api')
             ->postJson('api/consultation-access-enquiries', [
                 'consultation_id' => $this->consultation->getKey(),
+                'description' => $description,
                 'proposed_terms' => [
                     $proposedTerm,
                 ],
@@ -50,6 +52,7 @@ class ConsultationAccessEnquiryCreateApiTest extends TestCase
         $this->assertDatabaseHas('consultation_access_enquiries', [
             'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->student->getKey(),
+            'description' => $description,
         ]);
 
         /** @var ConsultationAccessEnquiry $enquiry */

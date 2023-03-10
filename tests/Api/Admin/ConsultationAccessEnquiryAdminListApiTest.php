@@ -71,6 +71,7 @@ class ConsultationAccessEnquiryAdminListApiTest extends TestCase
                         'email',
                     ],
                     'proposed_terms',
+                    'description',
                 ]],
             ]);
     }

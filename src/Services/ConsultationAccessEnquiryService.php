@@ -115,7 +115,8 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
 
     public function update(int $id, UpdateConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
     {
-        $enquiry = $this->accessEnquiryRepository->findById($id);
+        /** @var ConsultationAccessEnquiry $enquiry */
+        $enquiry = $this->accessEnquiryRepository->update($dto->toArray(), $id);
         $enquiry->consultationAccessEnquiryProposedTerms()->delete();
 
         foreach ($dto->getProposedTerms() as $term) {

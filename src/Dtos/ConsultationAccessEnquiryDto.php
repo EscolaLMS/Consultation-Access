@@ -14,13 +14,15 @@ class ConsultationAccessEnquiryDto implements DtoContract, InstantiateFromReques
     protected int $userId;
     protected string $status;
     protected array $proposedTerms;
+    protected ?string $description;
 
-    public function __construct(int $consultationId, int $userId, string $status, array $proposedTerms)
+    public function __construct(int $consultationId, int $userId, string $status, array $proposedTerms, ?string $description)
     {
         $this->consultationId = $consultationId;
         $this->userId = $userId;
         $this->status = $status;
         $this->proposedTerms = $proposedTerms;
+        $this->description = $description;
     }
 
     public function getConsultationId(): int
@@ -49,6 +51,7 @@ class ConsultationAccessEnquiryDto implements DtoContract, InstantiateFromReques
             'consultation_id' => $this->getConsultationId(),
             'user_id' => $this->getUserId(),
             'status' => $this->status,
+            'description' => $this->description,
         ];
     }
 
@@ -58,7 +61,8 @@ class ConsultationAccessEnquiryDto implements DtoContract, InstantiateFromReques
             $request->input('consultation_id'),
             auth()->id(),
             EnquiryStatusEnum::PENDING,
-            $request->input('proposed_terms')
+            $request->input('proposed_terms'),
+            $request->input('description')
         );
     }
 }

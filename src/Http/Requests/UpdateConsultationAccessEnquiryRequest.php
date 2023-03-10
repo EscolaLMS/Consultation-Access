@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Gate;
  *      schema="UpdateConsultationAccessEnquiryRequest",
  *      required={"proposed_terms"},
  *      @OA\Property(
+ *          property="description",
+ *          description="description",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
  *          property="proposed_terms",
  *          type="array",
  *          @OA\Items(
@@ -33,6 +38,7 @@ class UpdateConsultationAccessEnquiryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'description' => ['nullable', 'string', 'max:255'],
             'proposed_terms' => ['required', 'array', 'min:1'],
             'proposed_terms.*' => ['required', 'date', 'after_or_equal:now'],
         ];
