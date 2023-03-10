@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFromRequest
 {
     protected array $proposedTerms;
+    protected ?string $description;
 
-    public function __construct(array $proposedTerms)
+    public function __construct(array $proposedTerms, ?string $description)
     {
         $this->proposedTerms = $proposedTerms;
+        $this->description = $description;
     }
 
     public function getProposedTerms(): array
@@ -23,13 +25,16 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
 
     public function toArray(): array
     {
-        return [];
+        return [
+            'description' => $this->description,
+        ];
     }
 
     public static function instantiateFromRequest(Request $request): self
     {
         return new static(
-            $request->input('proposed_terms')
+            $request->input('proposed_terms'),
+            $request->input('description')
         );
     }
 }

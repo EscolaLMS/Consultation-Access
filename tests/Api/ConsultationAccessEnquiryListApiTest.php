@@ -60,6 +60,7 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
                             'proposed_at',
                         ],
                     ],
+                    'description',
                 ]],
             ]);
     }

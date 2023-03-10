@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Gate;
  *          type="number"
  *      ),
  *      @OA\Property(
+ *          property="description",
+ *          description="description",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
  *          property="proposed_terms",
  *          type="array",
  *          @OA\Items(
@@ -40,6 +45,7 @@ class CreateConsultationAccessEnquiryRequest extends FormRequest
             'consultation_id' => ['required', 'integer', 'exists:consultations,id'],
             'proposed_terms' => ['required', 'array', 'min:1'],
             'proposed_terms.*' => ['required', 'date', 'after_or_equal:now'],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 
