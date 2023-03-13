@@ -3,6 +3,7 @@
 namespace EscolaLms\ConsultationAccess\Http\Resources;
 
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
+use EscolaLms\Consultations\Http\Resources\ConsultationTermsResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -41,6 +42,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *          property="proposed_terms",
  *          ref="#/components/schemas/ConsultationAccessEnquiryProposedTermsResource"
  *      ),
+ *      @OA\Property(
+ *          property="consultation_term",
+ *          ref="#/components/schemas/ConsultationTerm"
+ *      ),
  * )
  *
  */
@@ -60,6 +65,7 @@ class ConsultationAccessEnquiryResource extends JsonResource
             'user' => UserShortResource::make($this->user),
             'proposed_terms' => ConsultationAccessEnquiryProposedTermsResource::collection($this->consultationAccessEnquiryProposedTerms),
             'description' => $this->description,
+            'consultation_term' => $this->consultationUser ? ConsultationTermsResource::make($this->consultationUser) : null,
         ];
     }
 }

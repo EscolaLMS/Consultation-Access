@@ -25,15 +25,13 @@ class ConsultationAccessEnquiryPolicy
     public function deleteOwn(User $user, ConsultationAccessEnquiry $enquiry): bool
     {
         return $user->can(ConsultationAccessPermissionEnum::DELETE_OWN_CONSULTATION_ACCESS_ENQUIRY)
-            && $enquiry->user->getKey() === $user->getKey()
-            && $enquiry->status === EnquiryStatusEnum::PENDING;
+            && $enquiry->user->getKey() === $user->getKey();
     }
 
     public function updateOwn(User $user, ConsultationAccessEnquiry $enquiry): bool
     {
         return $user->can(ConsultationAccessPermissionEnum::UPDATE_OWN_CONSULTATION_ACCESS_ENQUIRY)
-            && $enquiry->user->getKey() === $user->getKey()
-            && $enquiry->status === EnquiryStatusEnum::PENDING;
+            && $enquiry->user->getKey() === $user->getKey();
     }
 
     public function list(User $user): bool

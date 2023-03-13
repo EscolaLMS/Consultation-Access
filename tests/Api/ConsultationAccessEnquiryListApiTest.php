@@ -6,6 +6,7 @@ use EscolaLms\ConsultationAccess\Database\Seeders\ConsultationAccessPermissionSe
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
+use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Support\Carbon;
 
@@ -77,6 +78,7 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
 
         ConsultationAccessEnquiry::factory()
             ->state(['user_id' => $student->getKey()])
+            ->approved()
             ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::now()->addDays(3)]))
             ->create();
 
@@ -87,6 +89,10 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
         $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?proposed_at_to=' . Carbon::now()->addDay())
             ->assertOk()
             ->assertJsonCount(4, 'data');
+
+        $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?is_coming=1')
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
     }
 
     public function testConsultationAccessEnquiryListPagination(): void

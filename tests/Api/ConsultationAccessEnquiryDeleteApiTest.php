@@ -3,15 +3,10 @@
 namespace EscolaLms\ConsultationAccess\Tests\Api;
 
 use EscolaLms\ConsultationAccess\Database\Seeders\ConsultationAccessPermissionSeeder;
-use EscolaLms\ConsultationAccess\Enum\ConsultationAccessPermissionEnum;
-use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminCreatedEvent;
-use EscolaLms\ConsultationAccess\Models\Consultation;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
 use EscolaLms\Core\Tests\CreatesUsers;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Event;
 
 class ConsultationAccessEnquiryDeleteApiTest extends TestCase
 {
@@ -49,6 +44,33 @@ class ConsultationAccessEnquiryDeleteApiTest extends TestCase
 
         $this->assertDatabaseMissing('consultation_access_enquiry_proposed_terms', [
             'consultation_access_enquiry_id' => $this->enquiry->getKey(),
+        ]);
+    }
+
+    public function testDeleteApprovedConsultationAccessEnquiry(): void
+    {
+        $this->enquiry = ConsultationAccessEnquiry::factory()
+            ->state([
+                'user_id' => $this->student->getKey(),
+            ])
+            ->approved()
+            ->has(ConsultationAccessEnquiryProposedTerm::factory()->count(4))
+            ->create();
+
+        $this->actingAs($this->student, 'api')
+            ->deleteJson('api/consultation-access-enquiries/' . $this->enquiry->getKey())
+            ->assertOk();
+
+        $this->assertDatabaseMissing('consultation_access_enquiries', [
+            'id' => $this->enquiry->getKey(),
+        ]);
+
+        $this->assertDatabaseMissing('consultation_access_enquiry_proposed_terms', [
+            'consultation_access_enquiry_id' => $this->enquiry->getKey(),
+        ]);
+
+        $this->assertDatabaseMissing('consultation_user', [
+            'id' => $this->enquiry->consultation_user_id,
         ]);
     }
 }

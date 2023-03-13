@@ -23,4 +23,10 @@ class ConsultationAccessEnquiryProposedTermRepository extends BaseRepository imp
         /** @var ConsultationAccessEnquiryProposedTerm */
         return $this->model->newQuery()->findOrFail($id);
     }
+
+    public function firstOrCreate(array $attributes = [], array $values = []): ConsultationAccessEnquiryProposedTerm
+    {
+        /** @var ConsultationAccessEnquiryProposedTerm */
+        return $this->model->newQuery()->firstOrCreate($attributes, $values);
+    }
 }
