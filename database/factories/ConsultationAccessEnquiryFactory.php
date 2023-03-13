@@ -31,7 +31,7 @@ class ConsultationAccessEnquiryFactory extends Factory
                 'status' => EnquiryStatusEnum::APPROVED,
                 'consultation_user_id' => ConsultationUserPivot::factory()
                     ->state([
-                        'consultation_id' => Consultation::factory(),
+                        'consultation_id' => $attributes['consultation_id'],
                         'user_id' => $attributes['user_id'],
                         'executed_status' => ConsultationTermStatusEnum::APPROVED,
                     ]),
