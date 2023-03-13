@@ -3,6 +3,7 @@
 namespace EscolaLms\ConsultationAccess\Tests\Api;
 
 use EscolaLms\ConsultationAccess\Database\Seeders\ConsultationAccessPermissionSeeder;
+use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminUpdatedEvent;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
@@ -62,5 +63,30 @@ class ConsultationAccessEnquiryUpdateApiTest extends TestCase
             $this->assertEquals($this->enquiry->consultation->getKey(), $event->getConsultationAccessEnquiry()->consultation_id);
             return true;
         });
+    }
+
+    public function testUpdateApprovedConsultationAccessEnquiry(): void
+    {
+        Event::fake([ConsultationAccessEnquiryAdminUpdatedEvent::class]);
+
+        $this->enquiry = ConsultationAccessEnquiry::factory()
+            ->state(['user_id' => $this->student->getKey()])
+            ->approved()
+            ->has(ConsultationAccessEnquiryProposedTerm::factory()->count(4))
+            ->create();
+
+        $proposedTerm = Carbon::now()->addDays();
+
+        $this->actingAs($this->student, 'api')
+            ->patchJson('api/consultation-access-enquiries/' . $this->enquiry->getKey(), [
+                'proposed_terms' => [
+                    $proposedTerm,
+                ],
+            ])
+            ->assertOk();
+
+        $this->enquiry->refresh();
+        $this->assertEquals(EnquiryStatusEnum::PENDING, $this->enquiry->status);
+        $this->assertNull($this->enquiry->consultationUser);
     }
 }

@@ -78,6 +78,16 @@ interface ConsultationAccessEnquiryAdminApiSwagger
      *              format="date-time",
      *          ),
      *      ),
+     *     @OA\Parameter(
+     *          name="is_coming",
+     *          required=false,
+     *          in="query",
+     *          description="approved future or past consultations",
+     *          @OA\Schema(
+     *              type="string",
+     *              enum={"true", "false"}
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successfull operation",

@@ -18,6 +18,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *          description="name",
  *          type="string"
  *      ),
+ *      @OA\Property(
+ *          property="author",
+ *          description="author",
+ *          ref="#/components/schemas/ConsultationUserShortResource"
+ *      ),
  * )
  *
  */
@@ -32,6 +37,7 @@ class ConsultationShortResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'author' => UserShortResource::make($this->author),
         ];
     }
 }

@@ -6,6 +6,7 @@ use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFromRequest
 {
@@ -20,7 +21,9 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
 
     public function getProposedTerms(): array
     {
-        return $this->proposedTerms;
+        return collect($this->proposedTerms)
+            ->map(fn($term) => Carbon::make($term))
+            ->toArray();
     }
 
     public function toArray(): array

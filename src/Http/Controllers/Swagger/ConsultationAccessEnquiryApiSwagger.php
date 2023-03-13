@@ -71,6 +71,16 @@ interface ConsultationAccessEnquiryApiSwagger
      *              format="date-time",
      *          ),
      *      ),
+     *     @OA\Parameter(
+     *          name="is_coming",
+     *          required=false,
+     *          in="query",
+     *          description="approved future or past consultations",
+     *          @OA\Schema(
+     *              type="string",
+     *              enum={"true", "false"}
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successfull operation",
@@ -210,7 +220,7 @@ interface ConsultationAccessEnquiryApiSwagger
      *          ),
      *      ),
      *      @OA\Response(
-     *          response=201,
+     *          response=200,
      *          description="Successfull operation",
      *          @OA\MediaType(
      *              mediaType="application/json",

@@ -4,6 +4,7 @@ namespace EscolaLms\ConsultationAccess\Models;
 
 use EscolaLms\Auth\Models\User;
 use EscolaLms\ConsultationAccess\Database\Factories\ConsultationAccessEnquiryFactory;
+use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,10 +19,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $user_id
  * @property string $status
  * @property string $description
+ * @property int $consultation_user_id
  *
  * @property-read User $user
  * @property-read Consultation $consultation
  * @property-read Collection|ConsultationAccessEnquiryProposedTerm[] $consultationAccessEnquiryProposedTerms
+ * @property-read ?ConsultationUserPivot $consultationUser
  */
 class ConsultationAccessEnquiry extends Model
 {
@@ -32,6 +35,7 @@ class ConsultationAccessEnquiry extends Model
         'user_id',
         'status',
         'description',
+        'consultation_user_id',
     ];
 
     public function consultation(): BelongsTo
@@ -42,6 +46,11 @@ class ConsultationAccessEnquiry extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function consultationUser(): BelongsTo
+    {
+        return $this->belongsTo(ConsultationUserPivot::class);
     }
 
     public function consultationAccessEnquiryProposedTerms(): HasMany

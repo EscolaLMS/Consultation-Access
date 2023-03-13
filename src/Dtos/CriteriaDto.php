@@ -2,12 +2,14 @@
 
 namespace EscolaLms\ConsultationAccess\Dtos;
 
+use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Repositories\Criteria\Primitives\OrderCriterion;
 use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use EscolaLms\Core\Dtos\CriteriaDto as BaseCriteriaDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
+use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -27,6 +29,12 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
         }
         if ($request->get('status')) {
             $criteria->push(new EqualCriterion('status', $request->get('status')));
+        }
+        if ($request->has('is_coming')) {
+            $criteria->push(new HasCriterion('consultationUser', function (Builder $query) use ($request) {
+                $query->where('executed_status', ConsultationTermStatusEnum::APPROVED);
+                $query->whereDate('executed_at', $request->boolean('is_coming') ? '>=' : '<=', Carbon::now());
+            }));
         }
         if ($request->get('proposed_at_from')) {
             $criteria->push(new HasCriterion('consultationAccessEnquiryProposedTerms', function (Builder $query) use ($request) {

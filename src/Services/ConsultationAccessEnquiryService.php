@@ -19,6 +19,7 @@ use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquir
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryRepositoryContract;
 use EscolaLms\ConsultationAccess\Services\Contracts\ConsultationAccessEnquiryServiceContract;
 use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
+use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserRepositoryContract;
 use EscolaLms\Consultations\Services\Contracts\ConsultationServiceContract;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
@@ -93,9 +94,9 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         }
 
         DB::transaction(function () use ($enquiry, $proposedTerm) {
-            $this->createConsultationUser($proposedTerm);
-
+            $consultationUser = $this->createConsultationUser($proposedTerm);
             $this->accessEnquiryRepository->update([
+                'consultation_user_id' => $consultationUser->getKey(),
                 'status' => EnquiryStatusEnum::APPROVED,
             ], $enquiry->getKey());
         });
@@ -104,34 +105,45 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
     public function disapprove(int $id, ?string $message): void
     {
         $enquiry = $this->accessEnquiryRepository->findById($id);
-        $this->accessEnquiryRepository->remove($enquiry);
+        $this->delete($enquiry->getKey());
         event(new ConsultationAccessEnquiryDisapprovedEvent($enquiry->user, $enquiry->consultation->name, $message));
     }
 
     public function delete(int $id): void
     {
-        $this->accessEnquiryRepository->delete($id);
+        $enquiry = $this->accessEnquiryRepository->findById($id);
+        $consultationUser = $enquiry->consultationUser;
+        $this->accessEnquiryRepository->remove($enquiry);
+
+        if ($consultationUser) {
+            $consultationUser->delete();
+        }
     }
 
     public function update(int $id, UpdateConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
     {
-        /** @var ConsultationAccessEnquiry $enquiry */
-        $enquiry = $this->accessEnquiryRepository->update($dto->toArray(), $id);
-        $enquiry->consultationAccessEnquiryProposedTerms()->delete();
+        return DB::transaction(function () use ($id, $dto) {
+            $enquiry = $this->accessEnquiryRepository->findById($id);
+            $consultationUser = $enquiry->consultationUser;
 
-        foreach ($dto->getProposedTerms() as $term) {
-            $this->proposedTermRepository->create([
-                'consultation_access_enquiry_id' => $enquiry->getKey(),
-                'proposed_at' => $term,
-            ]);
-        }
+            /** @var ConsultationAccessEnquiry $enquiry */
+            $enquiry = $this->accessEnquiryRepository->update(array_merge($dto->toArray(), [
+                'consultation_user_id' => null,
+                'status' => EnquiryStatusEnum::PENDING,
+            ]), $enquiry->getKey());
 
-        event(new ConsultationAccessEnquiryAdminUpdatedEvent($enquiry->consultation->author, $enquiry));
+            if ($consultationUser) {
+                $consultationUser->delete();
+            }
 
-        return $enquiry;
+            $this->syncProposedTerms($enquiry, $dto->getProposedTerms());
+            event(new ConsultationAccessEnquiryAdminUpdatedEvent($enquiry->consultation->author, $enquiry));
+
+            return $enquiry;
+        });
     }
 
-    private function createConsultationUser(ConsultationAccessEnquiryProposedTerm $proposedTerm): void
+    private function createConsultationUser(ConsultationAccessEnquiryProposedTerm $proposedTerm): ConsultationUserPivot
     {
         $enquiry = $proposedTerm->consultationAccessEnquiry;
 
@@ -143,5 +155,21 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         ]);
 
         $this->consultationService->approveTerm($consultationUser->getKey());
+
+        return $consultationUser;
+    }
+
+    private function syncProposedTerms(ConsultationAccessEnquiry $enquiry, array $proposedTerms): void
+    {
+        $enquiry->consultationAccessEnquiryProposedTerms()
+            ->whereNotIn('proposed_at', $proposedTerms)
+            ->delete();
+
+        foreach ($proposedTerms as $term) {
+            $this->proposedTermRepository->firstOrCreate([
+                'consultation_access_enquiry_id' => $enquiry->getKey(),
+                'proposed_at' => $term,
+            ]);
+        }
     }
 }
