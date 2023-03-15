@@ -31,7 +31,7 @@ class ConsultationAccessEnquiryAdminApiController extends EscolaLmsBaseControlle
     public function approve(AdminApproveConsultationAccessEnquiryRequest $request): JsonResponse
     {
         try {
-            $this->service->approveByProposedTerm($request->getApproveConsultationAccessEnquiryDto());
+            $this->service->approveByProposedTerm($request->getProposedTermId());
             return $this->sendSuccess(__('Approved successfully.'));
         } catch (ConsultationAccessException $e) {
             return $this->sendError($e->getMessage(), $e->getCode());
