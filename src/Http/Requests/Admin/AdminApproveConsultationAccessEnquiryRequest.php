@@ -2,10 +2,23 @@
 
 namespace EscolaLms\ConsultationAccess\Http\Requests\Admin;
 
+use EscolaLms\ConsultationAccess\Dtos\ApproveConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Schema(
+ *      schema="AdminApproveConsultationAccessEnquiryRequest",
+ *      required={"meeting_link"},
+ *      @OA\Property(
+ *          property="meeting_link",
+ *          description="meeting_link",
+ *          type="string"
+ *      ),
+ * )
+ *
+ */
 class AdminApproveConsultationAccessEnquiryRequest extends FormRequest
 {
     public function authorize(): bool
@@ -17,6 +30,7 @@ class AdminApproveConsultationAccessEnquiryRequest extends FormRequest
     {
         return [
             'proposed_term_id' => ['required', 'integer', 'exists:consultation_access_enquiry_proposed_terms,id'],
+            'meeting_link' => ['sometimes', 'string', 'url'],
         ];
     }
 
@@ -28,5 +42,10 @@ class AdminApproveConsultationAccessEnquiryRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge(['proposed_term_id' => $this->getProposedTermId()]);
+    }
+
+    public function getApproveConsultationAccessEnquiryDto(): ApproveConsultationAccessEnquiryDto
+    {
+        return ApproveConsultationAccessEnquiryDto::instantiateFromRequest($this);
     }
 }

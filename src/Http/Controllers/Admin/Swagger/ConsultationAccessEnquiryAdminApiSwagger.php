@@ -132,6 +132,13 @@ interface ConsultationAccessEnquiryAdminApiSwagger
      *          required=true,
      *          in="path"
      *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/AdminApproveConsultationAccessEnquiryRequest")
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",

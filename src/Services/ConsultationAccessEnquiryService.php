@@ -2,6 +2,7 @@
 
 namespace EscolaLms\ConsultationAccess\Services;
 
+use EscolaLms\ConsultationAccess\Dtos\ApproveConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\ConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
 use EscolaLms\ConsultationAccess\Dtos\PageDto;
@@ -9,6 +10,7 @@ use EscolaLms\ConsultationAccess\Dtos\UpdateConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminCreatedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminUpdatedEvent;
+use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryApprovedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryDisapprovedEvent;
 use EscolaLms\ConsultationAccess\Exceptions\ConsultationAccessException;
 use EscolaLms\ConsultationAccess\Exceptions\EnquiryAlreadyApprovedException;
@@ -80,9 +82,9 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
     /**
      * @throws ConsultationAccessException
      */
-    public function approveByProposedTerm(int $proposedTermId): void
+    public function approveByProposedTerm(ApproveConsultationAccessEnquiryDto $dto): void
     {
-        $proposedTerm = $this->proposedTermRepository->findById($proposedTermId);
+        $proposedTerm = $this->proposedTermRepository->findById($dto->getProposedTermId());
         $enquiry = $proposedTerm->consultationAccessEnquiry;
 
         if ($enquiry->status === EnquiryStatusEnum::APPROVED) {
@@ -93,12 +95,17 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
             throw new TermIsBusyException();
         }
 
-        DB::transaction(function () use ($enquiry, $proposedTerm) {
+        DB::transaction(function () use ($enquiry, $proposedTerm, $dto) {
             $consultationUser = $this->createConsultationUser($proposedTerm);
-            $this->accessEnquiryRepository->update([
+
+            /** @var ConsultationAccessEnquiry $enquiry */
+            $enquiry = $this->accessEnquiryRepository->update([
                 'consultation_user_id' => $consultationUser->getKey(),
                 'status' => EnquiryStatusEnum::APPROVED,
+                'meeting_link' => $dto->getMeetingLink(),
             ], $enquiry->getKey());
+
+            event(new ConsultationAccessEnquiryApprovedEvent($enquiry->user, $enquiry));
         });
     }
 

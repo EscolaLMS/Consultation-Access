@@ -2,6 +2,7 @@
 
 namespace EscolaLms\ConsultationAccess\Services\Contracts;
 
+use EscolaLms\ConsultationAccess\Dtos\ApproveConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\ConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
 use EscolaLms\ConsultationAccess\Dtos\PageDto;
@@ -17,7 +18,7 @@ interface ConsultationAccessEnquiryServiceContract
     /**
      * @throws ConsultationAccessException
      */
-    public function approveByProposedTerm(int $proposedTermId): void;
+    public function approveByProposedTerm(ApproveConsultationAccessEnquiryDto $dto): void;
 
     public function disapprove(int $id, ?string $message): void;
 

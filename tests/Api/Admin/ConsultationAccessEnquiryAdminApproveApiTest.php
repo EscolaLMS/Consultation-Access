@@ -31,9 +31,11 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
     {
         /** @var ConsultationAccessEnquiryProposedTerm $proposedTerm */
         $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()->create();
-
+        $meetingLink = $this->faker->url;
         $this->actingAs($this->makeAdmin(), 'api')
-            ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
+            ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey(), [
+                'meeting_link' => $meetingLink,
+            ])
             ->assertOk();
 
         $proposedTerm->refresh();
@@ -41,6 +43,7 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
         $this->assertDatabaseHas('consultation_access_enquiries', [
             'status' => EnquiryStatusEnum::APPROVED,
             'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+            'meeting_link' => $meetingLink,
         ]);
 
         $this->assertDatabaseHas('consultation_user', [
