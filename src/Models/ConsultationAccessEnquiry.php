@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $status
  * @property string $description
  * @property int $consultation_user_id
+ * @property string $meeting_link
  *
  * @property-read User $user
  * @property-read Consultation $consultation
@@ -36,6 +37,7 @@ class ConsultationAccessEnquiry extends Model
         'status',
         'description',
         'consultation_user_id',
+        'meeting_link',
     ];
 
     public function consultation(): BelongsTo
