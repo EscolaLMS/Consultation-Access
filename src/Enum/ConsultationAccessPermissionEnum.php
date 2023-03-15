@@ -8,6 +8,7 @@ class ConsultationAccessPermissionEnum extends BasicEnum
 {
     const CREATE_OWN_CONSULTATION_ACCESS_ENQUIRY = 'consultation-access_create-own';
     const LIST_OWN_CONSULTATION_ACCESS_ENQUIRY = 'consultation-access_list-own';
+    const READ_OWN_CONSULTATION_ACCESS_ENQUIRY = 'consultation-access_read-own';
     const DELETE_OWN_CONSULTATION_ACCESS_ENQUIRY = 'consultation-access_delete-own';
     const UPDATE_OWN_CONSULTATION_ACCESS_ENQUIRY = 'consultation-access_update-own';
 
