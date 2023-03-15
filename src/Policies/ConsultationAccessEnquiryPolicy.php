@@ -17,6 +17,12 @@ class ConsultationAccessEnquiryPolicy
         return $user->can(ConsultationAccessPermissionEnum::CREATE_OWN_CONSULTATION_ACCESS_ENQUIRY);
     }
 
+    public function readOwn(User $user, ConsultationAccessEnquiry $enquiry): bool
+    {
+        return $user->can(ConsultationAccessPermissionEnum::READ_OWN_CONSULTATION_ACCESS_ENQUIRY)
+            && $enquiry->user_id === $user->getKey();
+    }
+
     public function listOwn(User $user): bool
     {
         return $user->can(ConsultationAccessPermissionEnum::LIST_OWN_CONSULTATION_ACCESS_ENQUIRY);

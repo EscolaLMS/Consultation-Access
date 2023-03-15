@@ -5,6 +5,7 @@ namespace EscolaLms\ConsultationAccess\Http\Controllers\Swagger;
 use EscolaLms\ConsultationAccess\Http\Requests\CreateConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Requests\DeleteConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Requests\ListConsultationAccessEnquiryRequest;
+use EscolaLms\ConsultationAccess\Http\Requests\ReadConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Requests\UpdateConsultationAccessEnquiryRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -107,6 +108,48 @@ interface ConsultationAccessEnquiryApiSwagger
      * )
      */
     public function index(ListConsultationAccessEnquiryRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *      path="/api/consultation-access-enquiries/{id}",
+     *     summary="Get my consultation access enquiry by id",
+     *     tags={"Consultation Access"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successfull operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="success",
+     *                      type="boolean"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      ref="#/components/schemas/ConsultationAccessEnquiryResource"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string"
+     *                  )
+     *              )
+     *          )
+     *      )
+     * )
+     */
+    public function read(ReadConsultationAccessEnquiryRequest $request): JsonResponse;
 
     /**
      * @OA\Post(
