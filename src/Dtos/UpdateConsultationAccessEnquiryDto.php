@@ -12,11 +12,17 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
 {
     protected array $proposedTerms;
     protected ?string $description;
+    protected ?string $title;
+    protected ?string $relatedType;
+    protected ?int $relatedId;
 
-    public function __construct(array $proposedTerms, ?string $description)
+    public function __construct(array $proposedTerms, ?string $description, ?string $title, ?string $relatedType, ?int $relatedId)
     {
         $this->proposedTerms = $proposedTerms;
         $this->description = $description;
+        $this->title = $title;
+        $this->relatedType = $relatedType;
+        $this->relatedId = $relatedId;
     }
 
     public function getProposedTerms(): array
@@ -30,6 +36,9 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
     {
         return [
             'description' => $this->description,
+            'title' => $this->title,
+            'related_type' => $this->relatedType,
+            'related_id' => $this->relatedId,
         ];
     }
 
@@ -37,7 +46,10 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
     {
         return new static(
             $request->input('proposed_terms'),
-            $request->input('description')
+            $request->input('description'),
+            $request->input('title'),
+            $request->input('related_type'),
+            $request->input('related_id'),
         );
     }
 }
