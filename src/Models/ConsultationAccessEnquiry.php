@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry
@@ -21,6 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $description
  * @property int $consultation_user_id
  * @property string $meeting_link
+ * @property ?string $title
+ * @property ?string $related_type
+ * @property ?int $related_id
  *
  * @property-read User $user
  * @property-read Consultation $consultation
@@ -38,6 +42,9 @@ class ConsultationAccessEnquiry extends Model
         'description',
         'consultation_user_id',
         'meeting_link',
+        'title',
+        'related_type',
+        'related_id',
     ];
 
     public function consultation(): BelongsTo
@@ -58,6 +65,11 @@ class ConsultationAccessEnquiry extends Model
     public function consultationAccessEnquiryProposedTerms(): HasMany
     {
         return $this->hasMany(ConsultationAccessEnquiryProposedTerm::class);
+    }
+
+    public function related(): MorphTo
+    {
+        return $this->morphTo('related');
     }
 
     public static function newFactory(): ConsultationAccessEnquiryFactory

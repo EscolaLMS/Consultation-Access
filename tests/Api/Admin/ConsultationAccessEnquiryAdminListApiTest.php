@@ -72,6 +72,9 @@ class ConsultationAccessEnquiryAdminListApiTest extends TestCase
                     ],
                     'proposed_terms',
                     'description',
+                    'title',
+                    'related_type',
+                    'related_id',
                 ]],
             ]);
     }

@@ -9,6 +9,7 @@ use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class ConsultationAccessEnquiryFactory extends Factory
 {
@@ -16,11 +17,15 @@ class ConsultationAccessEnquiryFactory extends Factory
 
     public function definition(): array
     {
+        $type = Str::ucfirst($this->faker->word) . $this->faker->numberBetween();
+
         return [
             'consultation_id' => Consultation::factory(),
             'user_id' => User::factory(),
             'status' => EnquiryStatusEnum::PENDING,
             'description' => $this->faker->text(),
+            'related_type' => 'EscolaLms\\' . $type . '\\Models\\' . $type,
+            'related_id' => $this->faker->numberBetween(1),
         ];
     }
 

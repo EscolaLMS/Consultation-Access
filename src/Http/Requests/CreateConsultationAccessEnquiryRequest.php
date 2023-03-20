@@ -22,6 +22,21 @@ use Illuminate\Support\Facades\Gate;
  *          type="string"
  *      ),
  *      @OA\Property(
+ *          property="title",
+ *          description="title",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="related_type",
+ *          description="related_type",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="related_id",
+ *          description="related_id",
+ *          type="integer"
+ *      ),
+ *      @OA\Property(
  *          property="proposed_terms",
  *          type="array",
  *          @OA\Items(
@@ -46,6 +61,9 @@ class CreateConsultationAccessEnquiryRequest extends FormRequest
             'proposed_terms' => ['required', 'array', 'min:1'],
             'proposed_terms.*' => ['required', 'date', 'after_or_equal:now'],
             'description' => ['nullable', 'string', 'max:255'],
+            'related_type' => ['nullable', 'string', 'required_with:related_id'],
+            'related_id' => ['nullable', 'integer', 'required_with:related_type'],
+            'title' => ['nullable', 'string', 'max:255'],
         ];
     }
 
