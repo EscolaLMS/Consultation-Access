@@ -36,7 +36,7 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
         $tutorOne = $this->makeInstructor();
         $tutorTwo = $this->makeInstructor();
 
-        $consultationOne = \App\Models\Consultation::factory()->create(['name' => 'A Consultation']);
+        $consultationOne = Consultation::factory()->create(['name' => 'A Consultation']);
         $consultationTwo = Consultation::factory()->create(['name' => 'B Consultation']);
 
         $consultationUserOne = ConsultationUserPivot::factory()->create([
