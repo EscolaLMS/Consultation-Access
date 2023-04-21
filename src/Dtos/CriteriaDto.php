@@ -47,8 +47,6 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
             }));
         }
 
-        $criteria->push(new OrderCriterion($request->get('order_by') ?? 'id', $request->get('order') ?? 'desc'));
-
         return new static($criteria);
     }
 }

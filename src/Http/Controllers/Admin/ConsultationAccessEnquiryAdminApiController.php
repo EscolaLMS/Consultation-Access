@@ -23,7 +23,7 @@ class ConsultationAccessEnquiryAdminApiController extends EscolaLmsBaseControlle
 
     public function index(AdminListConsultationAccessEnquiryRequest $request): JsonResponse
     {
-        $result = $this->service->findAll($request->getCriteriaDto(), $request->getPaginationDto(), auth()->id());
+        $result = $this->service->findAll($request->getCriteriaDto(), $request->getPaginationDto(), auth()->id(), $request->getOrderDto());
 
         return $this->sendResponseForResource(ConsultationAccessEnquiryResource::collection($result));
     }

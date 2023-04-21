@@ -9,11 +9,12 @@ use EscolaLms\ConsultationAccess\Dtos\PageDto;
 use EscolaLms\ConsultationAccess\Dtos\UpdateConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Exceptions\ConsultationAccessException;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
+use EscolaLms\Core\Dtos\OrderDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ConsultationAccessEnquiryServiceContract
 {
-    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator;
+    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId, ?OrderDto $orderDto = null): LengthAwarePaginator;
 
     /**
      * @throws ConsultationAccessException

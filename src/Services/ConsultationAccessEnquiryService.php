@@ -24,6 +24,7 @@ use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserRepositoryContract;
 use EscolaLms\Consultations\Services\Contracts\ConsultationServiceContract;
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -55,9 +56,9 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         return $this->accessEnquiryRepository->findByCriteria($criteria, $paginationDto->getPerPage());
     }
 
-    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
+    public function findAll(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId, ?OrderDto $orderDto = null): LengthAwarePaginator
     {
-        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getPerPage());
+        return $this->accessEnquiryRepository->findByCriteria($criteriaDto->toArray(), $paginationDto->getPerPage(), $orderDto);
     }
 
     public function create(ConsultationAccessEnquiryDto $dto): ConsultationAccessEnquiry
