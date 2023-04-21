@@ -4,8 +4,10 @@ namespace EscolaLms\ConsultationAccess\Repositories;
 
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryRepositoryContract;
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class ConsultationAccessEnquiryRepository extends BaseRepository implements ConsultationAccessEnquiryRepositoryContract
 {
@@ -23,15 +25,30 @@ class ConsultationAccessEnquiryRepository extends BaseRepository implements Cons
         ];
     }
 
-    public function findByCriteria(array $criteria, int $perPage): LengthAwarePaginator
+    public function findByCriteria(array $criteria, int $perPage, ?OrderDto $orderDto = null): LengthAwarePaginator
     {
-        return $this->queryWithAppliedCriteria($criteria)
-            ->paginate($perPage);
+        $query = $this->queryWithAppliedCriteria($criteria);
+
+        if (!is_null($orderDto)) {
+            $query = $this->orderBy($query, $orderDto);
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function findById(int $id): ConsultationAccessEnquiry
     {
         /** @var ConsultationAccessEnquiry */
         return $this->model->newQuery()->findOrFail($id);
+    }
+
+    private function orderBy(Builder $query, ?OrderDto $orderDto): Builder
+    {
+        return match ($orderDto->getOrderBy()) {
+            'term_date' => $query
+                ->withAggregate('consultationUser', 'executed_at')
+                ->orderBy('consultation_user_executed_at', $orderDto->getOrder() ?? 'asc'),
+            default => $query->orderBy($orderDto->getOrderBy() ?? 'id', $orderDto->getOrder() ?? 'asc'),
+        };
     }
 }
