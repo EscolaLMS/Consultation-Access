@@ -10,8 +10,10 @@
 
 ## What does it do
 
-This package is used to create enquiries for free consultation access. 
+This package is used to create enquiries for free consultation access.  
 Users with appropriate permissions can accept the enquiry and send a meeting link or reject the enquiry by sending a response message.
+
+Consultation management is in our other package which is [here](https://github.com/EscolaLMS/Consultations).
 
 ## Installing
 
@@ -47,12 +49,12 @@ sequenceDiagram
 
     Student->>LMS: Request consultation access
     LMS->>Admin: Notify
-    Admin->>Admin: Review request
-    alt Request approved
+    Admin->>Admin: Review enquiry
+    alt Enquiry approved
         Admin->>LMS: Approve request
         LMS -->> Student: Send notification of approval
-    else Request rejected
-        Admin->>LMS: Reject request
+    else Enquiry rejected
+        Admin->>LMS: Reject enquiry
         LMS -->> Student: Send rejection notification
     end
     

@@ -2,9 +2,9 @@ name: Generate Contracts Documentation
 
 on:
   push:
-    branches:
-      - main
-      - master
+#    branches:
+#      - main
+#      - master
 
 jobs:
   phpunit-code-coverage:
