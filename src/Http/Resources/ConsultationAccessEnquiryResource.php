@@ -49,7 +49,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      ),
  *      @OA\Property(
  *          property="consultation_term",
- *          ref="#/components/schemas/ConsultationTerm"
+ *          @OA\Schema(ref="#/components/schemas/ConsultationTerm")
  *      ),
  *      @OA\Property(
  *          property="related_type",
