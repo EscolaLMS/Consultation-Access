@@ -152,6 +152,48 @@ interface ConsultationAccessEnquiryApiSwagger
     public function read(ReadConsultationAccessEnquiryRequest $request): JsonResponse;
 
     /**
+     * @OA\Get(
+     *      path="/api/consultation-access-enquiries/{id}/join",
+     *     summary="Get url to consultation by enquiry id",
+     *     tags={"Consultation Access"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successfull operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="success",
+     *                      type="boolean"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      ref="#/components/schemas/JoinConsultationAccessResource"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string"
+     *                  )
+     *              )
+     *          )
+     *      )
+     * )
+     */
+    public function join(ReadConsultationAccessEnquiryRequest $request): JsonResponse;
+
+    /**
      * @OA\Post(
      *      path="/api/consultation-access-enquiries",
      *      summary="Store a newly Consultation Access Enqiury",

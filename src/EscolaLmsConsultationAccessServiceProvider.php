@@ -10,6 +10,7 @@ use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquir
 use EscolaLms\ConsultationAccess\Services\ConsultationAccessEnquiryService;
 use EscolaLms\ConsultationAccess\Services\Contracts\ConsultationAccessEnquiryServiceContract;
 use EscolaLms\Consultations\EscolaLmsConsultationsServiceProvider;
+use EscolaLms\PencilSpaces\EscolaLmsPencilSpacesServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -38,5 +39,6 @@ class EscolaLmsConsultationAccessServiceProvider extends ServiceProvider
     {
         $this->app->register(AuthServiceProvider::class);
         $this->app->register(EscolaLmsConsultationsServiceProvider::class);
+        $this->app->register(EscolaLmsPencilSpacesServiceProvider::class);
     }
 }

@@ -87,6 +87,7 @@ class ConsultationAccessEnquiryResource extends JsonResource
             'description' => $this->description,
             'consultation_term' => $this->consultationUser ? ConsultationTermsResource::make($this->consultationUser) : null,
             'meeting_link' => $this->meeting_link,
+            'meeting_link_type' => $this->meeting_link_type,
             'related_type' => $this->related_type,
             'related_id' => $this->related_id,
             'title' => $this->title,

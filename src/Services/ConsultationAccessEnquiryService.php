@@ -8,6 +8,7 @@ use EscolaLms\ConsultationAccess\Dtos\CriteriaDto;
 use EscolaLms\ConsultationAccess\Dtos\PageDto;
 use EscolaLms\ConsultationAccess\Dtos\UpdateConsultationAccessEnquiryDto;
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
+use EscolaLms\ConsultationAccess\Enum\MeetingLinkTypeEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminCreatedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryAdminUpdatedEvent;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryApprovedEvent;
@@ -15,6 +16,7 @@ use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryDisapprovedEven
 use EscolaLms\ConsultationAccess\Exceptions\ConsultationAccessException;
 use EscolaLms\ConsultationAccess\Exceptions\EnquiryAlreadyApprovedException;
 use EscolaLms\ConsultationAccess\Exceptions\TermIsBusyException;
+use EscolaLms\ConsultationAccess\Jobs\CreatePencilSpaceJob;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryProposedTermRepositoryContract;
@@ -104,9 +106,14 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
                 'consultation_user_id' => $consultationUser->getKey(),
                 'status' => EnquiryStatusEnum::APPROVED,
                 'meeting_link' => $dto->getMeetingLink(),
+                'meeting_link_type' => $dto->getMeetingLink() ? MeetingLinkTypeEnum::CUSTOM : null,
             ], $enquiry->getKey());
 
-            event(new ConsultationAccessEnquiryApprovedEvent($enquiry->user, $enquiry));
+            if (!$dto->getMeetingLink()) {
+                CreatePencilSpaceJob::dispatch($enquiry->getKey());
+            } else {
+                event(new ConsultationAccessEnquiryApprovedEvent($enquiry->user, $enquiry));
+            }
         });
     }
 

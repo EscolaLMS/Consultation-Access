@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $description
  * @property int $consultation_user_id
  * @property string $meeting_link
+ * @property ?string $meeting_link_type
  * @property ?string $title
  * @property ?string $related_type
  * @property ?int $related_id
@@ -42,6 +43,7 @@ class ConsultationAccessEnquiry extends Model
         'description',
         'consultation_user_id',
         'meeting_link',
+        'meeting_link_type',
         'title',
         'related_type',
         'related_id',

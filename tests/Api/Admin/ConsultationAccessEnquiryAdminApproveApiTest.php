@@ -4,12 +4,16 @@ namespace EscolaLms\ConsultationAccess\Tests\Api\Admin;
 
 use EscolaLms\ConsultationAccess\Database\Seeders\ConsultationAccessPermissionSeeder;
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
+use EscolaLms\ConsultationAccess\Enum\MeetingLinkTypeEnum;
+use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryApprovedEvent;
 use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\PencilSpaces\Facades\PencilSpace;
+use Illuminate\Support\Facades\Event;
 
 class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
 {
@@ -44,6 +48,7 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
             'status' => EnquiryStatusEnum::APPROVED,
             'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
             'meeting_link' => $meetingLink,
+            'meeting_link_type' => MeetingLinkTypeEnum::CUSTOM,
         ]);
 
         $this->assertDatabaseHas('consultation_user', [
@@ -92,5 +97,28 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
             ->assertJsonFragment([
                 'message' => __('Term is busy'),
             ]);
+    }
+
+    public function testConsultationAccessEnquiryAdminApproveWithoutMeetingLink(): void
+    {
+        PencilSpace::fake();
+        Event::fake([ConsultationAccessEnquiryApprovedEvent::class]);
+
+        /** @var ConsultationAccessEnquiryProposedTerm $proposedTerm */
+        $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()->create();
+        $this->actingAs($this->makeAdmin(), 'api')
+            ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
+            ->assertOk();
+
+        $proposedTerm->refresh();
+
+        $this->assertDatabaseHas('consultation_access_enquiries', [
+            'status' => EnquiryStatusEnum::APPROVED,
+            'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+            'meeting_link_type' => MeetingLinkTypeEnum::PENCIL_SPACES,
+        ]);
+
+        $this->assertNotNull($proposedTerm->consultationAccessEnquiry->meeting_link);
+        Event::assertDispatched(ConsultationAccessEnquiryApprovedEvent::class);
     }
 }

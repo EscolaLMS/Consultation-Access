@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Gate;
 /**
  * @OA\Schema(
  *      schema="AdminApproveConsultationAccessEnquiryRequest",
- *      required={"meeting_link"},
  *      @OA\Property(
  *          property="meeting_link",
  *          description="meeting_link",
@@ -30,7 +29,7 @@ class AdminApproveConsultationAccessEnquiryRequest extends FormRequest
     {
         return [
             'proposed_term_id' => ['required', 'integer', 'exists:consultation_access_enquiry_proposed_terms,id'],
-            'meeting_link' => ['sometimes', 'string', 'url'],
+            'meeting_link' => ['nullable', 'string', 'url'],
         ];
     }
 
