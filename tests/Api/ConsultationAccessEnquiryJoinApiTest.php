@@ -56,8 +56,8 @@ class ConsultationAccessEnquiryJoinApiTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
-                    'meeting_url',
-                    'meeting_url_type',
+                    'meeting_link',
+                    'meeting_link_type',
                 ],
             ]);
     }

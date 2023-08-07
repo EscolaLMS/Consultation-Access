@@ -17,13 +17,11 @@ use Illuminate\Support\Facades\Auth;
  *          type="number"
  *      ),
  *      @OA\Property(
- *          property="meeting_url",
- *          description="meeting_url",
+ *          property="meeting_link",
  *          type="string"
  *      ),
  *      @OA\Property(
- *          property="meeting_url_type",
- *          description="meeting_url_type",
+ *          property="meeting_link_type",
  *          type="string"
  *      ),
  * )
@@ -37,8 +35,8 @@ class JoinConsultationAccessResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'meeting_url_type' => $this->meeting_link_type,
-            'meeting_url' => $this->meeting_link_type === MeetingLinkTypeEnum::PENCIL_SPACES
+            'meeting_link_type' => $this->meeting_link_type,
+            'meeting_link' => $this->meeting_link_type === MeetingLinkTypeEnum::PENCIL_SPACES
                 ? PencilSpace::getDirectLoginUrl(Auth::id(), $this->meeting_link)
                 : $this->meeting_link,
         ];
