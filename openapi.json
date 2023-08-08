@@ -502,14 +502,58 @@
                     }
                 ]
             }
+        },
+        "/api/consultation-access-enquiries/{id}/join": {
+            "get": {
+                "tags": [
+                    "Consultation Access"
+                ],
+                "summary": "Get url to consultation by enquiry id",
+                "operationId": "8bfabb64e029984b20b80574d9e669b3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfull operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/JoinConsultationAccessResource"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
             "AdminApproveConsultationAccessEnquiryRequest": {
-                "required": [
-                    "meeting_link"
-                ],
                 "properties": {
                     "meeting_link": {
                         "description": "meeting_link",
@@ -667,6 +711,21 @@
                     },
                     "author": {
                         "$ref": "#/components/schemas/ConsultationUserShortResource"
+                    }
+                },
+                "type": "object"
+            },
+            "JoinConsultationAccessResource": {
+                "properties": {
+                    "id": {
+                        "description": "id",
+                        "type": "number"
+                    },
+                    "meeting_link": {
+                        "type": "string"
+                    },
+                    "meeting_link_type": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
