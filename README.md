@@ -59,6 +59,9 @@ sequenceDiagram
     end
     
 ```
+
+If you don't send the `meeting_url` during the approval, an automatic space will be created in [Pencil Spaces](https://www.pencilspaces.com/), and that link will be saved. You can find more information [here](https://github.com/EscolaLMS/Pencil-Spaces).
+
 ## Listeners
 
 This package does not listen for any events.

@@ -9,6 +9,7 @@ use EscolaLms\ConsultationAccess\Http\Requests\ReadConsultationAccessEnquiryRequ
 use EscolaLms\ConsultationAccess\Http\Requests\UpdateConsultationAccessEnquiryRequest;
 use EscolaLms\ConsultationAccess\Http\Resources\ConsultationAccessEnquiryResource;
 use EscolaLms\ConsultationAccess\Http\Requests\CreateConsultationAccessEnquiryRequest;
+use EscolaLms\ConsultationAccess\Http\Resources\JoinConsultationAccessResource;
 use EscolaLms\ConsultationAccess\Services\Contracts\ConsultationAccessEnquiryServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Http\JsonResponse;
@@ -53,5 +54,10 @@ class ConsultationAccessEnquiryApiController extends EscolaLmsBaseController imp
     public function read(ReadConsultationAccessEnquiryRequest $request): JsonResponse
     {
         return $this->sendResponseForResource(ConsultationAccessEnquiryResource::make($request->getEnquiry()));
+    }
+
+    public function join(ReadConsultationAccessEnquiryRequest $request): JsonResponse
+    {
+        return $this->sendResponseForResource(JoinConsultationAccessResource::make($request->getEnquiry()));
     }
 }
