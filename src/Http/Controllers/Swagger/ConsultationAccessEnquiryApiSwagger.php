@@ -82,6 +82,19 @@ interface ConsultationAccessEnquiryApiSwagger
      *              enum={"true", "false"}
      *          ),
      *      ),
+     *      @OA\Parameter(
+     *          name="consultation_term_ids[]",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(
+     *                  @OA\Schema(
+     *                      type="integer"
+     *                  ),
+     *              ),
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successfull operation",

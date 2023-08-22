@@ -9,6 +9,7 @@ use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use EscolaLms\Core\Dtos\CriteriaDto as BaseCriteriaDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
+use EscolaLms\Core\Repositories\Criteria\Primitives\InCriterion;
 use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -45,6 +46,9 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
             $criteria->push(new HasCriterion('consultationAccessEnquiryProposedTerms', function (Builder $query) use ($request) {
                 $query->whereDate('proposed_at', '<=', Carbon::make($request->get('proposed_at_to')));
             }));
+        }
+        if ($request->get('consultation_term_ids')) {
+            $criteria->push(new InCriterion('consultation_user_id', $request->get('consultation_term_ids')));
         }
 
         return new static($criteria);

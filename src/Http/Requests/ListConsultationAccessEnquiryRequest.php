@@ -22,6 +22,8 @@ class ListConsultationAccessEnquiryRequest extends FormRequest
         return [
             'order' => ['sometimes', 'string', 'in:ASC,DESC'],
             'order_by' => ['sometimes', 'string', 'in:id,consultation_id,status,description,user_id,meeting_link,created_at,term_date'],
+            'consultation_term_ids' => ['sometimes', 'array'],
+            'consultation_term_ids.*' => ['integer'],
         ];
     }
 

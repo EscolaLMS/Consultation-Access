@@ -50,6 +50,7 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
                         'id',
                         'name',
                     ],
+                    'consultation_term_id',
                     'user' => [
                         'id',
                         'name',
@@ -76,7 +77,8 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
             ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::now()]))
             ->create();
 
-        ConsultationAccessEnquiry::factory()
+        /** @var ConsultationAccessEnquiry $approved */
+        $approved = ConsultationAccessEnquiry::factory()
             ->state(['user_id' => $student->getKey()])
             ->approved()
             ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::now()->addDays(3)]))
@@ -91,6 +93,10 @@ class ConsultationAccessEnquiryListApiTest extends TestCase
             ->assertJsonCount(4, 'data');
 
         $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?is_coming=1')
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
+
+        $this->actingAs($student, 'api')->getJson('api/consultation-access-enquiries?consultation_term_ids[]=' . $approved->consultation_user_id)
             ->assertOk()
             ->assertJsonCount(1, 'data');
     }
