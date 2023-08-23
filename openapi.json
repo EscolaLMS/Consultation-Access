@@ -286,6 +286,15 @@
                                 "false"
                             ]
                         }
+                    },
+                    {
+                        "name": "consultation_term_ids[]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
                     }
                 ],
                 "responses": {
@@ -664,6 +673,10 @@
                     },
                     "consultation": {
                         "$ref": "#/components/schemas/ConsultationShortResource"
+                    },
+                    "consultation_term_id": {
+                        "description": "consultation_term_id",
+                        "type": "integer"
                     },
                     "user": {
                         "$ref": "#/components/schemas/ConsultationUserShortResource"
