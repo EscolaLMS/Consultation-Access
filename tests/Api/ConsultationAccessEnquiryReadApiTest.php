@@ -53,6 +53,7 @@ class ConsultationAccessEnquiryReadApiTest extends TestCase
                         'id',
                         'name',
                     ],
+                    'consultation_term_id',
                     'user' => [
                         'id',
                         'name',
