@@ -16,8 +16,6 @@ class DefaultSpaceTitleStrategy implements SpaceTitleStrategy
 
     public function getTitle(): string
     {
-        $executedAt = Carbon::make($this->enquiry->consultationUser->executed_at);
-
         return sprintf(
             '%s (%d) %s',
             $this->enquiry->user->name,
