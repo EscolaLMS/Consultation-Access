@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Consultation $consultation
  * @property-read Collection|ConsultationAccessEnquiryProposedTerm[] $consultationAccessEnquiryProposedTerms
  * @property-read ?ConsultationUserPivot $consultationUser
+ * @property-read ?Model $related
  */
 class ConsultationAccessEnquiry extends Model
 {

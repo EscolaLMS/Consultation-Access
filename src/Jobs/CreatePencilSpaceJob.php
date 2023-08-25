@@ -4,6 +4,7 @@ namespace EscolaLms\ConsultationAccess\Jobs;
 
 use EscolaLms\ConsultationAccess\Enum\MeetingLinkTypeEnum;
 use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryApprovedEvent;
+use EscolaLms\ConsultationAccess\Jobs\Strategies\SpaceTitleStrategyFactory;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryRepositoryContract;
 use EscolaLms\PencilSpaces\Facades\PencilSpace;
@@ -39,7 +40,7 @@ class CreatePencilSpaceJob implements ShouldQueue
             }
 
             $resource = new CreatePencilSpaceResource(
-                $enquiry->title ?? 'Consultation X ' . $enquiry->user->name,
+                SpaceTitleStrategyFactory::create($enquiry)->getTitle(),
                 collect($enquiry->consultation->author_id),
                 collect($enquiry->user_id)
             );
