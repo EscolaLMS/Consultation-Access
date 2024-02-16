@@ -25,9 +25,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      ),
  * )
  *
- */
-
-/**
  * @mixin Consultation
  */
 class ConsultationShortResource extends JsonResource
