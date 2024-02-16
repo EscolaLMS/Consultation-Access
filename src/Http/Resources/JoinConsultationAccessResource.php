@@ -26,9 +26,8 @@ use Illuminate\Support\Facades\Auth;
  *      ),
  * )
  *
+ * @mixin ConsultationAccessEnquiry
  */
-
-/** @mixin ConsultationAccessEnquiry */
 class JoinConsultationAccessResource extends JsonResource
 {
     public function toArray($request): array
