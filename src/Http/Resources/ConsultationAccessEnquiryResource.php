@@ -73,9 +73,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      ),
  * )
  *
- */
-
-/**
  * @mixin ConsultationAccessEnquiry
  */
 class ConsultationAccessEnquiryResource extends JsonResource

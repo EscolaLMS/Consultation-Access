@@ -20,9 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *          format="date-time"
  *      ),
  * )
- */
-
-/**
+ *
  * @mixin ConsultationAccessEnquiryProposedTerm
  */
 class ConsultationAccessEnquiryProposedTermsResource extends JsonResource
