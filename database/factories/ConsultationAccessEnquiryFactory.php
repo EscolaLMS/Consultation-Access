@@ -20,7 +20,7 @@ class ConsultationAccessEnquiryFactory extends Factory
         $type = Str::ucfirst($this->faker->word) . $this->faker->numberBetween();
 
         return [
-            'consultation_id' => Consultation::factory(),
+            'consultation_id' => Consultation::factory(['max_session_students' => 1]),
             'user_id' => User::factory(),
             'status' => EnquiryStatusEnum::PENDING,
             'description' => $this->faker->text(),

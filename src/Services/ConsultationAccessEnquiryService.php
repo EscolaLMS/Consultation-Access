@@ -94,7 +94,7 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
             throw new EnquiryAlreadyApprovedException();
         }
 
-        if ($this->consultationService->termIsBusy($enquiry->consultation_id, $proposedTerm->proposed_at)) {
+        if ($this->consultationService->termIsBusyForUser($enquiry->consultation_id, $proposedTerm->proposed_at, $enquiry->user_id)) {
             throw new TermIsBusyException();
         }
 
