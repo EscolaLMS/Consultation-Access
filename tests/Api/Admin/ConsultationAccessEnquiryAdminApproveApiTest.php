@@ -6,6 +6,7 @@ use EscolaLms\ConsultationAccess\Database\Seeders\ConsultationAccessPermissionSe
 use EscolaLms\ConsultationAccess\Enum\EnquiryStatusEnum;
 use EscolaLms\ConsultationAccess\Enum\MeetingLinkTypeEnum;
 use EscolaLms\ConsultationAccess\Jobs\CreatePencilSpaceJob;
+use EscolaLms\ConsultationAccess\Models\Consultation;
 use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
@@ -96,6 +97,58 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
             ->assertJsonFragment([
                 'message' => __('Term is busy'),
             ]);
+    }
+
+    public function testConsultationAccessEnquiryAdminApproveProposedTermUserAlreadyApprovedException(): void
+    {
+        /** @var ConsultationAccessEnquiryProposedTerm $proposedTerm */
+        $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()
+            ->create();
+
+        ConsultationUserPivot::factory()
+            ->state([
+                'user_id' => $proposedTerm->consultationAccessEnquiry->user_id,
+                'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+                'executed_at' => $proposedTerm->proposed_at,
+                'executed_status' => ConsultationTermStatusEnum::APPROVED,
+            ])->create();
+
+        $this->actingAs($this->makeAdmin(), 'api')
+            ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
+            ->assertStatus(400)
+            ->assertJsonFragment([
+                'message' => __('Term is busy for this user.'),
+            ]);
+    }
+
+    public function testConsultationAccessEnquiryAdminApproveProposedTermIsBusyMoreStudents(): void
+    {
+        /** @var ConsultationAccessEnquiryProposedTerm $proposedTerm */
+        $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()
+            ->create();
+
+        ConsultationUserPivot::factory()
+            ->state([
+                'user_id' => $this->makeStudent()->getKey(),
+                'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+                'executed_at' => $proposedTerm->proposed_at,
+                'executed_status' => ConsultationTermStatusEnum::APPROVED,
+            ])->create();
+
+        Consultation::query()->where('id', '=', $proposedTerm->consultationAccessEnquiry->consultation_id)->update([
+            'max_session_students' => 2,
+        ]);
+
+        $this->actingAs($this->makeAdmin(), 'api')
+            ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
+            ->assertOk();
+
+        $proposedTerm->refresh();
+
+        $this->assertDatabaseHas('consultation_access_enquiries', [
+            'status' => EnquiryStatusEnum::APPROVED,
+            'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+        ]);
     }
 
     public function testConsultationAccessEnquiryAdminApproveWithoutMeetingLink(): void
