@@ -162,6 +162,7 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
     {
         $enquiry = $proposedTerm->consultationAccessEnquiry;
 
+        /** @var ConsultationUserPivot $consultationUser */
         $consultationUser = $this->consultationUserRepository->create([
             'consultation_id' => $enquiry->consultation_id,
             'user_id' => $enquiry->user_id,

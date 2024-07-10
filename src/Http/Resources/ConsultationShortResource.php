@@ -32,9 +32,9 @@ class ConsultationShortResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'author' => UserShortResource::make($this->author),
+            'id' => $this->resource->id,
+            'name' => $this->resource->name,
+            'author' => UserShortResource::make($this->resource->author),
         ];
     }
 }

@@ -51,6 +51,6 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
             $criteria->push(new InCriterion('consultation_user_id', $request->get('consultation_term_ids')));
         }
 
-        return new static($criteria);
+        return new self($criteria);
     }
 }

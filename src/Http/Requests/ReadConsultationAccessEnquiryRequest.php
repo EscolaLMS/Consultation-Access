@@ -20,7 +20,9 @@ class ReadConsultationAccessEnquiryRequest extends FormRequest
 
     public function getId(): int
     {
-        return $this->route('id');
+        /** @var int $id */
+        $id = $this->route('id');
+        return $id;
     }
 
     public function getEnquiry(): ConsultationAccessEnquiry

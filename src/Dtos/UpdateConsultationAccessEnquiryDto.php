@@ -44,7 +44,7 @@ class UpdateConsultationAccessEnquiryDto implements DtoContract, InstantiateFrom
 
     public static function instantiateFromRequest(Request $request): self
     {
-        return new static(
+        return new self(
             $request->input('proposed_terms'),
             $request->input('description'),
             $request->input('title'),

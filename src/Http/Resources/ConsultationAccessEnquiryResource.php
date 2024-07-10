@@ -81,7 +81,7 @@ class ConsultationAccessEnquiryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at,
+            'created_at' => $this->resource->created_at,
             'status' => $this->status,
             'consultation' => ConsultationShortResource::make($this->consultation),
             'consultation_term_id' => $this->consultation_user_id,

@@ -66,7 +66,7 @@ class ConsultationAccessEnquiryDto implements DtoContract, InstantiateFromReques
 
     public static function instantiateFromRequest(Request $request): self
     {
-        return new static(
+        return new self(
             $request->input('consultation_id'),
             auth()->id(),
             EnquiryStatusEnum::PENDING,
