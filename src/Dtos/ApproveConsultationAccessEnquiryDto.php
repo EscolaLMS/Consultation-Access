@@ -34,7 +34,7 @@ class ApproveConsultationAccessEnquiryDto implements DtoContract, InstantiateFro
 
     public static function instantiateFromRequest(Request $request): ApproveConsultationAccessEnquiryDto
     {
-        return new static(
+        return new self(
             $request->input('proposed_term_id'),
             $request->input('meeting_link')
         );
