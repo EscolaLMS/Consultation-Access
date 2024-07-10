@@ -32,6 +32,8 @@ class AdminDisapproveConsultationAccessEnquiryRequest extends FormRequest
 
     public function getConsultationAccessEnquiryId(): int
     {
-        return $this->route('id');
+        /** @var int $id */
+        $id = $this->route('id');
+        return $id;
     }
 }

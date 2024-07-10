@@ -35,7 +35,9 @@ class AdminApproveConsultationAccessEnquiryRequest extends FormRequest
 
     public function getProposedTermId(): int
     {
-        return $this->route('proposedTermId');
+        /** @var int $id */
+        $id = $this->route('proposedTermId');
+        return $id;
     }
 
     protected function prepareForValidation(): void
