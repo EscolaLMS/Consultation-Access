@@ -22,9 +22,11 @@ use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryProposedTermRepositoryContract;
 use EscolaLms\ConsultationAccess\Repositories\Contracts\ConsultationAccessEnquiryRepositoryContract;
 use EscolaLms\ConsultationAccess\Services\Contracts\ConsultationAccessEnquiryServiceContract;
+use EscolaLms\Consultations\Dto\ConsultationUserTermDto;
 use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserRepositoryContract;
+use EscolaLms\Consultations\Repositories\Contracts\ConsultationUserTermRepositoryContract;
 use EscolaLms\Consultations\Services\Contracts\ConsultationServiceContract;
 use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
@@ -37,17 +39,20 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
     private ConsultationAccessEnquiryProposedTermRepositoryContract $proposedTermRepository;
     private ConsultationUserRepositoryContract $consultationUserRepository;
     private ConsultationServiceContract $consultationService;
+    private ConsultationUserTermRepositoryContract $consultationUserTermRepository;
 
     public function __construct(
         ConsultationAccessEnquiryRepositoryContract $accessEnquiryRepository,
         ConsultationAccessEnquiryProposedTermRepositoryContract $proposedTermRepository,
         ConsultationUserRepositoryContract $consultationUserRepository,
-        ConsultationServiceContract $consultationService
+        ConsultationServiceContract $consultationService,
+        ConsultationUserTermRepositoryContract $consultationUserTermRepository,
     ) {
         $this->accessEnquiryRepository = $accessEnquiryRepository;
         $this->proposedTermRepository = $proposedTermRepository;
         $this->consultationUserRepository = $consultationUserRepository;
         $this->consultationService = $consultationService;
+        $this->consultationUserTermRepository = $consultationUserTermRepository;
     }
 
     public function findByUser(CriteriaDto $criteriaDto, PageDto $paginationDto, int $userId): LengthAwarePaginator
@@ -107,6 +112,7 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
                 'status' => EnquiryStatusEnum::APPROVED,
                 'meeting_link' => $dto->getMeetingLink(),
                 'meeting_link_type' => $dto->getMeetingLink() ? MeetingLinkTypeEnum::CUSTOM : null,
+                'consultation_user_term_id' => $consultationUser->userTerms()->first()->getKey(),
             ], $enquiry->getKey());
 
             if (!$dto->getMeetingLink()) {
@@ -166,11 +172,14 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
         $consultationUser = $this->consultationUserRepository->create([
             'consultation_id' => $enquiry->consultation_id,
             'user_id' => $enquiry->user_id,
+        ]);
+
+        $this->consultationUserTermRepository->createUserTerm($consultationUser, [
             'executed_at' => $proposedTerm->proposed_at,
             'executed_status' => ConsultationTermStatusEnum::REPORTED,
         ]);
 
-        $this->consultationService->approveTerm($consultationUser->getKey());
+        $this->consultationService->approveTerm($consultationUser->getKey(), new ConsultationUserTermDto(['term' => $proposedTerm->proposed_at]));
 
         return $consultationUser;
     }
