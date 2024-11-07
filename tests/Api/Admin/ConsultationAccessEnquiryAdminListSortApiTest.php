@@ -39,16 +39,24 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
         $consultationOne = Consultation::factory()->create(['name' => 'A Consultation']);
         $consultationTwo = Consultation::factory()->create(['name' => 'B Consultation']);
 
+        /** @var ConsultationUserPivot $consultationUserOne */
         $consultationUserOne = ConsultationUserPivot::factory()->create([
             'user_id' => $studentOne->getKey(),
             'consultation_id' => $consultationOne->getKey(),
+        ]);
+
+        $consultationUserOne->userTerms()->create([
             'executed_status' => 'approved',
             'executed_at' => Carbon::today()->addDays(1),
         ]);
 
+        /** @var ConsultationUserPivot $consultationUserTwo */
         $consultationUserTwo = ConsultationUserPivot::factory()->create([
             'user_id' => $studentTwo->getKey(),
             'consultation_id' => $consultationTwo->getKey(),
+        ]);
+
+        $consultationUserTwo->userTerms()->create([
             'executed_status' => 'approved',
             'executed_at' => Carbon::today()->addDays(2),
         ]);

@@ -10,6 +10,7 @@ use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
 use EscolaLms\Consultations\Models\Consultation;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
+use EscolaLms\Consultations\Models\ConsultationUserTerm;
 use EscolaLms\Courses\Models\Course;
 use EscolaLms\Courses\Models\Lesson;
 use EscolaLms\Courses\Models\Topic;
@@ -18,6 +19,7 @@ class SpaceTitleStrategyTest extends TestCase
 {
     private ConsultationAccessEnquiry $enquiry;
     private ConsultationUserPivot $consultationUser;
+    private ConsultationUserTerm $consultationUserTerm;
 
     protected function setUp(): void
     {
@@ -30,6 +32,10 @@ class SpaceTitleStrategyTest extends TestCase
             ])
             ->create();
 
+        $this->consultationUserTerm = $this->consultationUser->userTerms()->create([
+           'executed_at' => now()->format('Y-m-d H:i:s'),
+        ]);
+
         /** @var ConsultationAccessEnquiry $enquiry */
         $this->enquiry = ConsultationAccessEnquiry::factory()
             ->state([
@@ -37,8 +43,10 @@ class SpaceTitleStrategyTest extends TestCase
                 'meeting_link' => null,
                 'meeting_link_type' => null,
                 'consultation_user_id' => $this->consultationUser->getKey(),
+                'consultation_user_term_id' => $this->consultationUserTerm->getKey(),
             ])
             ->create();
+
     }
 
     public function testDefaultSpaceTitle(): void
@@ -106,7 +114,7 @@ class SpaceTitleStrategyTest extends TestCase
             '%s (%d) %s',
             $this->enquiry->user->name,
             $this->enquiry->user->getKey(),
-            Carbon::make($this->consultationUser->executed_at)->format('d-m-Y')
+            Carbon::make($this->enquiry->consultationUserTerm->executed_at)->format('d-m-Y')
         );
     }
 }

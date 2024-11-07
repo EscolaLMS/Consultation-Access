@@ -54,8 +54,14 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
         $this->assertDatabaseHas('consultation_user', [
             'user_id' => $proposedTerm->consultationAccessEnquiry->user_id,
             'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
+        ]);
+
+        $proposedTerm->refresh();
+
+        $this->assertDatabaseHas('consultation_user_terms', [
             'executed_at' => $proposedTerm->proposed_at,
             'executed_status' => ConsultationTermStatusEnum::APPROVED,
+            'consultation_user_id' => $proposedTerm->consultationAccessEnquiry->consultation_user_id,
         ]);
     }
 
@@ -83,13 +89,17 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
         $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()
             ->create();
 
-        ConsultationUserPivot::factory()
+        /** @var ConsultationUserPivot $consultationUser */
+        $consultationUser = ConsultationUserPivot::factory()
             ->state([
                 'user_id' => $this->makeStudent()->getKey(),
                 'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
-                'executed_at' => $proposedTerm->proposed_at,
-                'executed_status' => ConsultationTermStatusEnum::APPROVED,
             ])->create();
+
+        $consultationUser->userTerms()->create([
+            'executed_at' => $proposedTerm->proposed_at,
+            'executed_status' => ConsultationTermStatusEnum::APPROVED,
+        ]);
 
         $this->actingAs($this->makeAdmin(), 'api')
             ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
