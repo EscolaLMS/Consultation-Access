@@ -5,6 +5,7 @@ namespace EscolaLms\ConsultationAccess\Models;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\ConsultationAccess\Database\Factories\ConsultationAccessEnquiryFactory;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
+use EscolaLms\Consultations\Models\ConsultationUserTerm;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Collection|ConsultationAccessEnquiryProposedTerm[] $consultationAccessEnquiryProposedTerms
  * @property-read ?ConsultationUserPivot $consultationUser
  * @property-read ?Model $related
+ * @property-read ?ConsultationUserTerm $consultationUserTerm
  */
 class ConsultationAccessEnquiry extends Model
 {
@@ -48,6 +50,7 @@ class ConsultationAccessEnquiry extends Model
         'title',
         'related_type',
         'related_id',
+        'consultation_user_term_id',
     ];
 
     public function consultation(): BelongsTo
@@ -63,6 +66,11 @@ class ConsultationAccessEnquiry extends Model
     public function consultationUser(): BelongsTo
     {
         return $this->belongsTo(ConsultationUserPivot::class);
+    }
+
+    public function consultationUserTerm(): BelongsTo
+    {
+        return $this->belongsTo(ConsultationUserTerm::class);
     }
 
     public function consultationAccessEnquiryProposedTerms(): HasMany

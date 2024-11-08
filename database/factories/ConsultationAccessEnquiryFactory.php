@@ -32,14 +32,19 @@ class ConsultationAccessEnquiryFactory extends Factory
     public function approved(): Factory
     {
         return $this->state(function (array $attributes) {
+            $consultationUser = ConsultationUserPivot::factory()
+                ->create([
+                    'consultation_id' => $attributes['consultation_id'],
+                    'user_id' => $attributes['user_id'],
+                ]);
+            $userTerm = $consultationUser->userTerms()->create([
+                'executed_at' => now()->modify('+2 hours')->format('Y-m-d H:i:s'),
+                'executed_status' => ConsultationTermStatusEnum::APPROVED,
+            ]);
             return [
                 'status' => EnquiryStatusEnum::APPROVED,
-                'consultation_user_id' => ConsultationUserPivot::factory()
-                    ->state([
-                        'consultation_id' => $attributes['consultation_id'],
-                        'user_id' => $attributes['user_id'],
-                        'executed_status' => ConsultationTermStatusEnum::APPROVED,
-                    ]),
+                'consultation_user_id' => $consultationUser->getKey(),
+                'consultation_user_term_id' => $userTerm->getKey(),
             ];
         });
     }

@@ -20,7 +20,7 @@ class DefaultSpaceTitleStrategy implements SpaceTitleStrategy
             '%s (%d) %s',
             $this->enquiry->user->name,
             $this->enquiry->user->getKey(),
-            Carbon::make($this->enquiry->consultationUser->executed_at)->format('d-m-Y'),
+            Carbon::make($this->enquiry->consultationUserTerm->executed_at)->format('d-m-Y'),
         );
     }
 }

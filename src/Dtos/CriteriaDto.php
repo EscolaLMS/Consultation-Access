@@ -32,7 +32,7 @@ class CriteriaDto extends BaseCriteriaDto implements DtoContract, InstantiateFro
             $criteria->push(new EqualCriterion('status', $request->get('status')));
         }
         if ($request->has('is_coming')) {
-            $criteria->push(new HasCriterion('consultationUser', function (Builder $query) use ($request) {
+            $criteria->push(new HasCriterion('consultationUserTerm', function (Builder $query) use ($request) {
                 $query->where('executed_status', ConsultationTermStatusEnum::APPROVED);
                 $query->whereDate('executed_at', $request->boolean('is_coming') ? '>=' : '<=', Carbon::now());
             }));

@@ -9,6 +9,7 @@ use EscolaLms\ConsultationAccess\Events\ConsultationAccessEnquiryApprovedEvent;
 use EscolaLms\ConsultationAccess\Jobs\CreatePencilSpaceJob;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
+use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Models\Consultation;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Core\Tests\CreatesUsers;
@@ -31,12 +32,18 @@ class CreatePencilSpaceJobTest extends TestCase
         PencilSpace::fake();
         Event::fake([ConsultationAccessEnquiryApprovedEvent::class]);
 
+        /** @var ConsultationUserPivot $consultationUser */
         $consultationUser = ConsultationUserPivot::factory()
             ->state([
                 'user_id' =>  User::factory(),
                 'consultation_id' => Consultation::factory(),
             ])
             ->create();
+
+        $userTerm = $consultationUser->userTerms()->create([
+            'executed_at' => now()->modify('+2 hours')->format('Y-m-d H:i:s'),
+            'executed_status' => ConsultationTermStatusEnum::APPROVED,
+        ]);
 
         /** @var ConsultationAccessEnquiry $enquiry */
         $enquiry = ConsultationAccessEnquiry::factory()
@@ -45,6 +52,7 @@ class CreatePencilSpaceJobTest extends TestCase
                 'meeting_link' => null,
                 'meeting_link_type' => null,
                 'consultation_user_id' => $consultationUser->getKey(),
+                'consultation_user_term_id' => $userTerm->getKey(),
             ])
             ->create();
 
