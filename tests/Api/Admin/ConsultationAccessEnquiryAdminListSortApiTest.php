@@ -9,6 +9,7 @@ use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiryProposedTerm;
 use EscolaLms\ConsultationAccess\Tests\TestCase;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
+use EscolaLms\Consultations\Models\ConsultationUserTerm;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Carbon;
@@ -45,7 +46,8 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
             'consultation_id' => $consultationOne->getKey(),
         ]);
 
-        $consultationUserOne->userTerms()->create([
+        /** @var ConsultationUserTerm $userTermOne */
+        $userTermOne = $consultationUserOne->userTerms()->create([
             'executed_status' => 'approved',
             'executed_at' => Carbon::today()->addDays(1),
         ]);
@@ -56,7 +58,8 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
             'consultation_id' => $consultationTwo->getKey(),
         ]);
 
-        $consultationUserTwo->userTerms()->create([
+        /** @var ConsultationUserTerm $userTermTwo */
+        $userTermTwo = $consultationUserTwo->userTerms()->create([
             'executed_status' => 'approved',
             'executed_at' => Carbon::today()->addDays(2),
         ]);
@@ -69,6 +72,7 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
                 'consultation_id' => $consultationOne->getKey(),
                 'meeting_link' => 'A link',
                 'status' => EnquiryStatusEnum::APPROVED,
+                'consultation_user_term_id' => $userTermOne->getKey(),
             ])
             ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::today()->addDays(1)]))
             ->create();
@@ -81,6 +85,7 @@ class ConsultationAccessEnquiryAdminListSortApiTest extends TestCase
                 'consultation_id' => $consultationTwo->getKey(),
                 'meeting_link' => 'B link',
                 'status' => EnquiryStatusEnum::PENDING,
+                'consultation_user_term_id' => $userTermTwo->getKey(),
             ])
             ->has(ConsultationAccessEnquiryProposedTerm::factory()->state(['proposed_at' => Carbon::today()->addDays(2)]))
             ->create();

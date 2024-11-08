@@ -47,7 +47,7 @@ class ConsultationAccessEnquiryRepository extends BaseRepository implements Cons
         return match ($orderDto->getOrderBy()) {
             'term_date' => $query
                 ->withAggregate('consultationUserTerm', 'executed_at')
-                ->orderBy('consultation_user_terms_executed_at', $orderDto->getOrder() ?? 'asc'),
+                ->orderBy('consultation_user_term_executed_at', $orderDto->getOrder() ?? 'asc'),
             default => $query->orderBy($orderDto->getOrderBy() ?? 'id', $orderDto->getOrder() ?? 'asc'),
         };
     }

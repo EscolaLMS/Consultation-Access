@@ -115,13 +115,17 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
         $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()
             ->create();
 
-        ConsultationUserPivot::factory()
+        /** @var ConsultationUserPivot $consultationUser */
+        $consultationUser = ConsultationUserPivot::factory()
             ->state([
                 'user_id' => $proposedTerm->consultationAccessEnquiry->user_id,
                 'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
-                'executed_at' => $proposedTerm->proposed_at,
-                'executed_status' => ConsultationTermStatusEnum::APPROVED,
             ])->create();
+
+        $consultationUser->userTerms()->create([
+            'executed_at' => $proposedTerm->proposed_at,
+            'executed_status' => ConsultationTermStatusEnum::APPROVED,
+        ]);
 
         $this->actingAs($this->makeAdmin(), 'api')
             ->postJson('api/admin/consultation-access-enquiries/approve/' . $proposedTerm->getKey())
@@ -137,13 +141,17 @@ class ConsultationAccessEnquiryAdminApproveApiTest extends TestCase
         $proposedTerm = ConsultationAccessEnquiryProposedTerm::factory()
             ->create();
 
-        ConsultationUserPivot::factory()
+        /** @var ConsultationUserPivot $consultationUser */
+        $consultationUser = ConsultationUserPivot::factory()
             ->state([
                 'user_id' => $this->makeStudent()->getKey(),
                 'consultation_id' => $proposedTerm->consultationAccessEnquiry->consultation_id,
-                'executed_at' => $proposedTerm->proposed_at,
-                'executed_status' => ConsultationTermStatusEnum::APPROVED,
             ])->create();
+
+        $consultationUser->userTerms()->create([
+            'executed_at' => $proposedTerm->proposed_at,
+            'executed_status' => ConsultationTermStatusEnum::APPROVED,
+        ]);
 
         Consultation::query()->where('id', '=', $proposedTerm->consultationAccessEnquiry->consultation_id)->update([
             'max_session_students' => 2,

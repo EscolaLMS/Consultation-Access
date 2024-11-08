@@ -4,6 +4,7 @@ namespace EscolaLms\ConsultationAccess\Http\Resources;
 
 use EscolaLms\ConsultationAccess\Models\ConsultationAccessEnquiry;
 use EscolaLms\Consultations\Http\Resources\ConsultationTermsResource;
+use EscolaLms\Consultations\Http\Resources\ConsultationUserTermsResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -88,7 +89,7 @@ class ConsultationAccessEnquiryResource extends JsonResource
             'user' => UserShortResource::make($this->user),
             'proposed_terms' => ConsultationAccessEnquiryProposedTermsResource::collection($this->consultationAccessEnquiryProposedTerms),
             'description' => $this->description,
-            'consultation_term' => $this->consultationUser ? ConsultationTermsResource::make($this->consultationUser) : null,
+            'consultation_term' => $this->consultationUserTerm ? ConsultationUserTermsResource::make($this->consultationUserTerm) : null,
             'meeting_link' => $this->meeting_link,
             'meeting_link_type' => $this->meeting_link_type,
             'related_type' => $this->related_type,

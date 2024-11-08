@@ -9,9 +9,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('consultation_access_enquiries', function (Blueprint $table) {
-            $table->foreignId('consultation_user_term_id')->nullable();
-
-            $table->foreign('consultation_user_term_id')->references('id')->on('consultation_user_terms')->onDelete('cascade');
+            $table->foreignId('consultation_user_term_id')
+                ->nullable()
+                ->constrained('consultation_user_terms')
+                ->cascadeOnDelete();
         });
     }
 

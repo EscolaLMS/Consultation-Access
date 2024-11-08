@@ -150,6 +150,7 @@ class ConsultationAccessEnquiryService implements ConsultationAccessEnquiryServi
             /** @var ConsultationAccessEnquiry $enquiry */
             $enquiry = $this->accessEnquiryRepository->update(array_merge($dto->toArray(), [
                 'consultation_user_id' => null,
+                'consultation_user_term_id' => null,
                 'status' => EnquiryStatusEnum::PENDING,
             ]), $enquiry->getKey());
 
