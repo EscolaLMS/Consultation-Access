@@ -761,5 +761,15 @@
                 "type": "object"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Admin Consultation Access",
+            "description": "Admin Consultation Access"
+        },
+        {
+            "name": "Consultation Access",
+            "description": "Consultation Access"
+        }
+    ]
 }
